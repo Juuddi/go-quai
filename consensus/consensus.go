@@ -50,6 +50,9 @@ type ChainHeaderReader interface {
 
 	// QueueAndRetrieveExtBlocks passes external blocks to the queue and returns the amount available for this block
 	QueueAndRetrieveExtBlocks(externalBlocks []*types.ExternalBlock, header *types.Header) []*types.ExternalBlock
+
+	// RequestExternalBlock accesses the network handler to request a certain block from peers
+	RequestExternalBlock(hash common.Hash) error
 }
 
 // ChainReader defines a small collection of methods needed to access the local

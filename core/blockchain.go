@@ -139,6 +139,10 @@ type CacheConfig struct {
 	ExternalBlockJournal string // Disk journal for saving clean cache entries.
 }
 
+type NetworkHandler interface {
+	RequestExternalBlock(hash common.Hash) error
+}
+
 // defaultCacheConfig are the default caching values if none are specified by the
 // user (also used during testing).
 var defaultCacheConfig = &CacheConfig{
@@ -217,6 +221,8 @@ type BlockChain struct {
 	vmConfig   vm.Config
 
 	shouldPreserve func(*types.Block) bool // Function used to determine whether should preserve the given block.
+
+	networkHandler NetworkHandler
 }
 
 // NewBlockChain returns a fully initialised block chain using information
@@ -2479,6 +2485,10 @@ func (bc *BlockChain) GetExternalBlock(hash common.Hash, number uint64, context 
 	return block, nil
 }
 
+func (bc *BlockChain) RequestExternalBlock(hash common.Hash) error {
+	return bc.networkHandler.RequestExternalBlock(hash)
+}
+
 // StoreExternalBlocks removes the external block from the cached blocks and writes it into the database
 func (bc *BlockChain) StoreExternalBlocks(blocks []*types.ExternalBlock) error {
 
@@ -2652,4 +2662,9 @@ func (bc *BlockChain) SubscribeLogsEvent(ch chan<- []*types.Log) event.Subscript
 // block processing has started while false means it has stopped.
 func (bc *BlockChain) SubscribeBlockProcessingEvent(ch chan<- bool) event.Subscription {
 	return bc.scope.Track(bc.blockProcFeed.Subscribe(ch))
+}
+
+func (bc *BlockChain) SetNetworkHandler(handler NetworkHandler) {
+	bc.chainmu.Lock()
+	bc.networkHandler = handler
 }

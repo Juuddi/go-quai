@@ -26,6 +26,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	lru "github.com/hashicorp/golang-lru"
 	"github.com/spruce-solutions/go-quai/common"
 	"github.com/spruce-solutions/go-quai/consensus"
 	"github.com/spruce-solutions/go-quai/core"
@@ -37,7 +38,6 @@ import (
 	"github.com/spruce-solutions/go-quai/log"
 	"github.com/spruce-solutions/go-quai/params"
 	"github.com/spruce-solutions/go-quai/rlp"
-	lru "github.com/hashicorp/golang-lru"
 )
 
 var (
@@ -495,6 +495,12 @@ func (lc *LightChain) GetHeaderByNumber(number uint64) *types.Header {
 // the external blocks cache.
 func (lc *LightChain) GetExternalBlock(hash common.Hash, number uint64, context uint64) (*types.ExternalBlock, error) {
 	return nil, nil
+}
+
+// GetExternalBlock is not applicable in the header chain since the BlockChain contains
+// the external blocks cache.
+func (lc *LightChain) RequestExternalBlock(hash common.Hash) error {
+	return nil
 }
 
 // QueueAndRetrieveExtBlocks is not applicable in the header chain since the BlockChain contains

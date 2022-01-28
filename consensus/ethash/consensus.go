@@ -769,6 +769,8 @@ func (ethash *Ethash) TraceBranch(chain consensus.ChainHeaderReader, header *typ
 			extBlock, err := chain.GetExternalBlock(header.Hash(), header.Number[context].Uint64(), uint64(context))
 			if err != nil {
 				log.Warn("TraceBranch: External Block not found for header", "number", header.Number[context], "context", context, "hash", header.Hash())
+				// ask peer for extblock
+				chain.RequestExternalBlock(header.Hash()) // this function is expected to wait ten seconds for it
 				break
 			}
 			if logging {

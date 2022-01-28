@@ -533,6 +533,23 @@ func (h *handler) minedBroadcastLoop() {
 	}
 }
 
+func (h *handler) RequestExternalBlock(hash common.Hash) error {
+	peers := h.peers.peers
+	list := make([]*ethPeer, 0, len(peers))
+
+	for _, p := range peers {
+		list = append(list, p)
+	}
+	list = list[:int(math.Sqrt(float64(len(peers))))] // taken from BroadcastBlock (a subset of peers)
+
+	for _, p := range list {
+		p.RequestExternalBlocks([]common.Hash{hash})
+	}
+	// TODO: Wait on a channel for the block and return it here
+	return nil
+
+}
+
 // txBroadcastLoop announces new transactions to connected peers.
 func (h *handler) txBroadcastLoop() {
 	defer h.wg.Done()

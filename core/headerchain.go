@@ -26,6 +26,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	lru "github.com/hashicorp/golang-lru"
 	"github.com/spruce-solutions/go-quai/common"
 	"github.com/spruce-solutions/go-quai/consensus"
 	"github.com/spruce-solutions/go-quai/core/rawdb"
@@ -33,7 +34,6 @@ import (
 	"github.com/spruce-solutions/go-quai/ethdb"
 	"github.com/spruce-solutions/go-quai/log"
 	"github.com/spruce-solutions/go-quai/params"
-	lru "github.com/hashicorp/golang-lru"
 )
 
 const (
@@ -532,6 +532,12 @@ func (hc *HeaderChain) GetHeaderByNumber(number uint64) *types.Header {
 // the external blocks cache.
 func (hc *HeaderChain) GetExternalBlock(hash common.Hash, number uint64, context uint64) (*types.ExternalBlock, error) {
 	return nil, nil
+}
+
+// GetExternalBlock is not applicable in the header chain since the BlockChain contains
+// the external blocks cache.
+func (hc *HeaderChain) RequestExternalBlock(hash common.Hash) error {
+	return nil
 }
 
 // QueueAndRetrieveExtBlocks is not applicable in the header chain since the BlockChain contains

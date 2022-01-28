@@ -340,6 +340,8 @@ func (cr *fakeChainReader) GetBlock(hash common.Hash, number uint64) *types.Bloc
 func (cr *fakeChainReader) GetExternalBlock(hash common.Hash, number uint64, context uint64) (*types.ExternalBlock, error) {
 	return nil, nil
 }
+
+func (cr *fakeChainReader) RequestExternalBlock(hash common.Hash) error { return nil }
 func (cr *fakeChainReader) QueueAndRetrieveExtBlocks(blocks []*types.ExternalBlock, header *types.Header) []*types.ExternalBlock {
 	return nil
 }
